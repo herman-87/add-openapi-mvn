@@ -1,0 +1,73 @@
+openapi: 3.0.1
+info:
+  title: Banking API Specification for account operations
+  description: |-
+    A simple banking API that allows two operations:
+    - get account balance given account number
+    - deposit amount to a account
+  version: 1.0-SNAPSHOT
+servers:
+  - url: http
+paths:
+  /account:
+    get:
+      tags:
+        - Account
+      summary: Get account information
+      description: Get account information using account number
+      operationId: getAccount
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountDTO'
+        404:
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNotFoundErrorDTO'
+  /account/deposit:
+    post:
+      tags:
+        - Account
+      summary: Deposit amount to account
+      description: Initiates a deposit operation of a desired amount to the account specified
+      operationId: depositToAccount
+      requestBody:
+        description: Account number and desired amount to deposit
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositRequestDTO'
+        required: true
+      responses:
+        204:
+          description: Success
+        404:
+          description: Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNotFoundErrorDTO'
+components:
+  schemas:
+    AccountDTO:
+      type: object
+      properties:
+        balance:
+          type: number
+    AccountNotFoundErrorDTO:
+      type: object
+      properties:
+        message:
+          type: string
+    DepositRequestDTO:
+      type: object
+      properties:
+        accountNumber:
+          type: string
+        depositAmount:
+          type: number
